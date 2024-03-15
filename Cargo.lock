@@ -294,6 +294,8 @@ dependencies = [
  "figment",
  "rpassword",
  "serde",
+ "serde_json",
+ "url 2.5.0",
 ]
 
 [[package]]
@@ -1797,6 +1799,7 @@ dependencies = [
  "form_urlencoded",
  "idna 0.5.0",
  "percent-encoding 2.3.1",
+ "serde",
 ]
 
 [[package]]

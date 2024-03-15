@@ -2,6 +2,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
+use crate::types::CpLoginResponse;
 use crate::{CheckpointConfig, Host};
 use anyhow::{anyhow, Context};
 use cp_api::Client;
@@ -11,7 +12,7 @@ pub(crate) fn invoke(
     config: &CheckpointConfig,
     accept_invalid_certs: bool,
     want_read_only: bool,
-) -> anyhow::Result<()> {
+) -> anyhow::Result<CpLoginResponse> {
     let host = match &config.host {
         Host::IPv4(x) => x.to_string(),
         Host::IPv6(x) => x.to_string(),
@@ -38,14 +39,13 @@ pub(crate) fn invoke(
 
     if login.is_success() {
         println!("Login successful...");
-        println!("UID: {}", client.uid());
-        println!("API Server Version: {}", client.api_server_version());
-        println!("SID: {}", client.sid());
+
+        let res: CpLoginResponse = serde_json::from_value::<CpLoginResponse>(login.data).unwrap();
 
         client.logout().context("Error when attempting to logout")?;
         println!("Logout successful.");
 
-        return Ok(());
+        return Ok(res);
     } else if login.is_client_error() {
         return Err(anyhow!(
             "client error {} {}",
@@ -58,7 +58,7 @@ pub(crate) fn invoke(
             login.data["code"],
             login.data["message"]
         ));
-    }
+    };
 
-    Ok(())
+    unreachable!();
 }

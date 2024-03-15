@@ -13,6 +13,7 @@ use serde::Deserialize;
 use std::path::PathBuf;
 
 pub(crate) mod commands;
+pub(crate) mod types;
 
 #[derive(Debug, Deserialize)]
 #[serde(untagged)]
@@ -93,7 +94,7 @@ fn main() -> anyhow::Result<()> {
             args.accept_invalid_certs,
             read_only,
         )?,
-    }
+    };
 
     Ok(())
 }
