@@ -1,0 +1,13 @@
+[package]
+name = "cpquery"
+version = "0.1.0"
+authors = ["Jamie Reid <jamie@jre.id.au>"]
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0.81"
+clap = { version = "4.5.2", features = ["derive", "cargo"] }
+cp_api = "0.4.0"
+dirs = "5.0.1"
+figment = { version = "0.10.14", features = ["toml", "env"] }
+serde = { version = "1.0.197", features = ["derive"] }
