@@ -1,7 +1,7 @@
 use crate::{CheckpointConfig, Host};
 use anyhow::{anyhow, Context};
 use cp_api::Client;
-use std::io;
+use rpassword;
 
 pub(crate) fn invoke(
     config: &CheckpointConfig,
@@ -16,15 +16,13 @@ pub(crate) fn invoke(
 
     let port = config.port.unwrap_or(443);
 
-    let password = if let Some(x) = &config.password {
+    let password: String = if let Some(x) = &config.password {
         x.clone()
     } else {
-        println!("Please input password for user {}:", &config.username);
-        let mut input = String::new();
-        io::stdin()
-            .read_line(&mut input)
-            .expect("Failed to read in password from stdin");
-        input
+        rpassword::prompt_password(format!(
+            "Please input password for user {}: ",
+            &config.username
+        ))?
     };
 
     let mut client = Client::new(&host, port);
