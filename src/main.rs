@@ -6,7 +6,7 @@ use anyhow::Context;
 use clap::{ArgAction, Parser, Subcommand};
 use dirs;
 use figment::{
-    providers::{Env, Format, Toml},
+    providers::{Format, Toml},
     Figment,
 };
 use serde::Deserialize;
@@ -48,7 +48,7 @@ struct Args {
     config_file: Option<PathBuf>,
 
     /// ignore ssl errors
-    #[clap(short = 'k', long = "insecure", action=ArgAction::SetTrue)]
+    #[clap(short = 'k', long = "insecure", action = ArgAction::SetTrue)]
     accept_invalid_certs: bool,
 }
 
@@ -72,18 +72,8 @@ fn main() -> anyhow::Result<()> {
         }
     };
 
-    let file_next_to_binary = if let Ok(exe_path) = std::env::current_exe() {
-        let mut f = exe_path;
-        f.push("ncs.toml");
-        f
-    } else {
-        anyhow::bail!("Unable to determine current location of binary");
-    };
-
     let config: Config = Figment::new()
         .merge(Toml::file(file_to_load))
-        .merge(Toml::file(file_next_to_binary))
-        .merge(Env::prefixed("NCS_"))
         .extract()
         .context("Unable to load configuration")?;
 
